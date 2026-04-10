@@ -1,1 +1,5 @@
-# taskify
+The Student Planner & Task Management System is an application developed to provide help to students to productively manage and organize academic responsibilities such as organizing assignments, deadlines, and study schedules. The main purpose of this system is to enable students to visualize planning their responsibilities by arranging tasks ahead of time whether it’s something that’s daily, weekly, or even monthly to improve academic performance.  
+
+The target users of this system are college students and even high school students who need assistance in tracking their coursework, due dates, and other tasks. This system would have users create/upload tasks, set reminders, set assignment priority, and monitor progress through each semester.  
+
+The main problem that the student planner and task management system wish to address is students who have trouble with time management and organization. The effects of these issues result in academic stress, poor grades, burnout, falling behind, and overall reduced academic performance. This system hopes to flip those effects and help students stay on track to a healthy, stress-free relationship with their academics.  
