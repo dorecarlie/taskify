@@ -19,7 +19,8 @@ public class IT extends Users {
     }
 
     public void viewDatabase() {
-        System.out.println("Viewing task database...");
+
+        System.out.println(username + " is viewing the task database...");
     }
 
     public void performMaintenance() {
