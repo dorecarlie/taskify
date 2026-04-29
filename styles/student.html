@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify — Student Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page-container">
+    <div class="status-bar">
+        <a href="index.html" style="text-decoration: none; color: var(--student-accent);">‹ Back</a>
+        <span>9:41</span>
+        <div class="status-icons"><span class="batt">88%</span></div>
+    </div>
+
+    <div class="page-content">
+        <header style="margin-top: 10px;">
+            <h1 class="welcome-title">Student Planner</h1>
+            <p class="welcome-sub">Manage your academic life</p>
+        </header>
+
+        <div class="view-tabs">
+            <button class="view-btn active">Task List</button>
+            <a href="calendar.html" class="view-btn" style="text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center;">Calendar</a>
+            <button class="view-btn" onclick="alert('Viewing automated reminders based on priority...')">Reminders</button>
+        </div>
+
+        <div class="task-form-card">
+            <h3 style="margin-top:0; font-size:16px;">Create New Task</h3>
+            <div class="field-group">
+                <label class="field-label">Assignment Title</label>
+                <input type="text" id="taskTitle" class="field-input" placeholder="e.g. Data Structures Lab">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <div class="field-group" style="flex: 2;">
+                    <label class="field-label">Deadline</label>
+                    <input type="datetime-local" id="taskDeadline" class="field-input">
+                </div>
+                <div class="field-group" style="flex: 1;">
+                    <label class="field-label">Priority (1-5)</label>
+                    <input type="number" id="taskPriority" class="field-input" min="1" max="5" value="1">
+                </div>
+            </div>
+            
+            <button onclick="handleCreateTask()" class="auth-submit-btn" style="--accent: var(--student-accent); border:none; width:100%; cursor:pointer;">
+                Add to Schedule
+            </button>
+        </div>
+
+        <div id="taskList" class="task-list-container" style="margin-top: 20px;">
+            <p style="text-align:center; color:gray; font-size:12px;">No tasks created yet.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * MIRRORING JAVA CLASS: Task.java
+     */
+    class Task {
+        constructor(taskId, title, deadlineStr, priority) {
+            this.taskId = taskId;
+            this.title = title;
+            this.deadline = new Date(deadlineStr);
+            this.priority = parseInt(priority);
+        }
+
+        isOverdue() {
+            return this.deadline < new Date();
+        }
+    }
+
+    /**
+     * MIRRORING JAVA OBSERVER: Reminders.java
+     */
+    const RemindersObserver = {
+        update(task) {
+            console.log(`[Reminder Observer] Task created: ${task.title}`);
+            if (task.priority >= 4) {
+                alert(`HIGH PRIORITY REMINDER: ${task.title} is due on ${task.deadline.toLocaleString()}`);
+            }
+        }
+    };
+
+    /**
+     * MIRRORING JAVA OBSERVER: CalendarView.java
+     */
+    const CalendarObserver = {
+        update(task) {
+            console.log(`[Calendar Observer] Refreshing map with: ${task.title}`);
+            // Logic handled by refreshing the localStorage for calendar.html
+        }
+    };
+
+    // Global Task Array
+    let tasks = JSON.parse(localStorage.getItem('studentTasks') || '[]');
+
+    // Initial render if data exists
+    window.onload = () => {
+        renderTasks();
+    };
+
+    function handleCreateTask() {
+        const titleInput = document.getElementById('taskTitle');
+        const deadlineInput = document.getElementById('taskDeadline');
+        const priorityInput = document.getElementById('taskPriority');
+
+        if (!titleInput.value || !deadlineInput.value) {
+            alert("Please enter title and date!");
+            return;
+        }
+
+        // 1. Instantiate the Task Object (Java Style)
+        const newTask = new Task(
+            Date.now(),
+            titleInput.value,
+            deadlineInput.value,
+            priorityInput.value
+        );
+
+        // 2. Notify Observers (Observer Pattern)
+        RemindersObserver.update(newTask);
+        CalendarObserver.update(newTask);
+
+        // 3. Save and Refresh UI
+        tasks.push(newTask);
+        localStorage.setItem('studentTasks', JSON.stringify(tasks));
+        
+        renderTasks();
+
+        // Reset inputs
+        titleInput.value = '';
+        deadlineInput.value = '';
+    }
+
+    function renderTasks() {
+        const listContainer = document.getElementById('taskList');
+        
+        if (tasks.length === 0) {
+            listContainer.innerHTML = '<p style="text-align:center; color:gray; font-size:12px;">No tasks created yet.</p>';
+            return;
+        }
+
+        listContainer.innerHTML = tasks.map(t => {
+            const taskObj = new Task(t.taskId, t.title, t.deadline, t.priority);
+            const isOverdue = taskObj.isOverdue();
+            
+            return `
+                <div class="task-item ${isOverdue ? 'overdue' : ''}">
+                    <div class="task-info">
+                        <strong style="display:block;">${taskObj.title}</strong>
+                        <span style="font-size:11px; color:var(--text-sub);">
+                            ${taskObj.deadline.toLocaleDateString()} — ${taskObj.deadline.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                    </div>
+                    <div class="priority-tag" style="background: ${getPriorityColor(taskObj.priority)}; color: white;">
+                        P${taskObj.priority}
+                    </div>
+                </div>
+            `;
+        }).reverse().join(''); // Reverse to show newest at top
+    }
+
+    function getPriorityColor(p) {
+        if (p >= 4) return '#e74c4c'; // Red
+        if (p >= 2) return '#9d8fef'; // Purple
+        return '#4caf7d'; // Green
+    }
+</script>
+
+</body>
+</html>
