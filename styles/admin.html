@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Taskify — Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="status-bar"><a href="index.html">‹ Back</a><span>Admin Panel</span></div>
+        
+        <header style="margin-top:20px; text-align:center;">
+            <div class="role-badge" id="adminRoleBadge">High Level Employee</div>
+            <h2 class="welcome-title" style="color:var(--admin-accent)">Admin Oversight</h2>
+        </header>
+
+        <div class="dash-action-grid">
+            <button class="dash-action-card" onclick="handleAdminAction('manageUsers')">
+                <span style="font-size:24px">👥</span>
+                <span class="dac-label">Manage Users</span>
+                <span class="dac-desc">Edit user database</span>
+            </button>
+
+            <button class="dash-action-card" onclick="handleAdminAction('manageTasks')">
+                <span style="font-size:24px">📋</span>
+                <span class="dac-label">Manage Tasks</span>
+                <span class="dac-desc">Task database control</span>
+            </button>
+        </div>
+
+        <div class="admin-console">
+            <h3>System Logs</h3>
+            <div id="adminLogs" class="log-window" style="background:#2d3436; color:#e0a060;">
+                <code>Waiting for action...</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation of your Admin Java Class
+        const currentAdmin = {
+            userId: 2001,
+            username: "Admin_Principal",
+            role: "admin", // Try changing this to "superadmin" or "viewer"
+            
+            validatePermissions(action) {
+                if (this.role.toLowerCase() === "superadmin") return true;
+                if (this.role.toLowerCase() === "admin") {
+                    return (action === "manageUsers" || action === "manageTasks");
+                }
+                return false;
+            }
+        };
+
+        function handleAdminAction(action) {
+            const logBoard = document.getElementById('adminLogs');
+            
+            if (currentAdmin.validatePermissions(action)) {
+                logBoard.innerHTML += `<div>[SUCCESS] ${action}: Managing the database...</div>`;
+            } else {
+                logBoard.innerHTML += `<div style="color:#ff7675">[DENIED] Insufficient permissions for ${action}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

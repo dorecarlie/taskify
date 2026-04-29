@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Taskify — IT Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="status-bar"><a href="index.html">‹ Back</a><span>IT System</span></div>
+        
+        <header>
+            <h2 class="welcome-title" style="color:var(--it-accent)">System Metrics</h2>
+            <p class="welcome-sub">Live Database Status</p>
+        </header>
+
+        <div class="dash-action-grid">
+            <div class="metric-card">
+                <span class="metric-value">1,204</span>
+                <span class="metric-label">Active Tasks</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">99.9%</span>
+                <span class="metric-label">Uptime</span>
+            </div>
+        </div>
+
+        <div class="it-section">
+            <h3>Database Queries</h3>
+            <div class="log-window">
+                <code>[17:50] TaskID: 102 created by User 402</code><br>
+                <code>[17:51] Priority update: Task 88 -> Level 5</code><br>
+                <code>[17:55] Overdue check running...</code>
+            </div>
+        </div>
+
+        <div class="it-section">
+            <h3>Maintenance Tools</h3>
+            <button class="tool-btn">Run Garbage Collector</button>
+            <button class="tool-btn">Re-index SQL Tables</button>
+        </div>
+    </div>
+</body>
+</html>
