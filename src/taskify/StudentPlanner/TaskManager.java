@@ -21,6 +21,10 @@ public abstract class TaskManager {
         }
     }
 
+    public List<Task> getTasks() {
+    return tasks;
+}
+
     public abstract void createTask(Task task);
     public abstract void editTask(int taskId, Task updatedTask);
     public abstract void deleteTask(int taskId);
