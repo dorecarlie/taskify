@@ -1,63 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Taskify — Admin</title>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard — Taskify</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--np-orange);
+            padding-bottom: 10px;
+        }
+        .admin-header h2 {
+            font-size: 16px;
+            color: var(--np-navy);
+            text-transform: uppercase;
+        }
+        .user-item, .task-item-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .permission-badge {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: #e0e0e0;
+            color: var(--np-navy);
+            font-weight: bold;
+        }
+        .validate-btn {
+            background: var(--np-orange);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .delete-btn-admin {
+            color: #ff4d4d;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
-        <div class="status-bar"><a href="index.html">‹ Back</a><span>Admin Panel</span></div>
-        
-        <header style="margin-top:20px; text-align:center;">
-            <div class="role-badge" id="adminRoleBadge">High Level Employee</div>
-            <h2 class="welcome-title" style="color:var(--admin-accent)">Admin Oversight</h2>
-        </header>
-
-        <div class="dash-action-grid">
-            <button class="dash-action-card" onclick="handleAdminAction('manageUsers')">
-                <span style="font-size:24px">👥</span>
-                <span class="dac-label">Manage Users</span>
-                <span class="dac-desc">Edit user database</span>
-            </button>
-
-            <button class="dash-action-card" onclick="handleAdminAction('manageTasks')">
-                <span style="font-size:24px">📋</span>
-                <span class="dac-label">Manage Tasks</span>
-                <span class="dac-desc">Task database control</span>
-            </button>
+        <div class="status-bar">
+            <a href="index.html" style="color: var(--np-orange);">‹ Back to Roles</a>
+            <span>9:41</span>
         </div>
+        
+        <div class="page-content">
+            <h1 class="welcome-title">ADMIN CONTROL PANEL</h1>
 
-        <div class="admin-console">
-            <h3>System Logs</h3>
-            <div id="adminLogs" class="log-window" style="background:#2d3436; color:#e0a060;">
-                <code>Waiting for action...</code>
+            <!-- 1. Manage Users & Validate Permissions -->
+            <div class="admin-card">
+                <div class="admin-header">
+                    <h2>Manage Users</h2>
+                </div>
+                <div id="userManagementList">
+                    <!-- Users will be injected here -->
+                </div>
+            </div>
+
+            <!-- 2. Manage Tasks -->
+            <div class="admin-card">
+                <div class="admin-header">
+                    <h2>Global Task Management</h2>
+                </div>
+                <div id="taskManagementList">
+                    <!-- Global tasks will be injected here -->
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Simulation of your Admin Java Class
-        const currentAdmin = {
-            userId: 2001,
-            username: "Admin_Principal",
-            role: "admin", // Try changing this to "superadmin" or "viewer"
-            
-            validatePermissions(action) {
-                if (this.role.toLowerCase() === "superadmin") return true;
-                if (this.role.toLowerCase() === "admin") {
-                    return (action === "manageUsers" || action === "manageTasks");
-                }
-                return false;
-            }
+        // Mock data for administration
+        let appUsers = [
+            { id: 1, name: "John Doe", role: "Student", validated: true },
+            { id: 2, name: "Professor Chen", role: "Instructor", validated: false },
+            { id: 3, name: "Jane Smith", role: "Student", validated: true }
+        ];
+
+        let globalTasks = JSON.parse(localStorage.getItem('studentTasks') || '[]');
+
+        window.onload = () => {
+            renderUsers();
+            renderGlobalTasks();
         };
 
-        function handleAdminAction(action) {
-            const logBoard = document.getElementById('adminLogs');
-            
-            if (currentAdmin.validatePermissions(action)) {
-                logBoard.innerHTML += `<div>[SUCCESS] ${action}: Managing the database...</div>`;
-            } else {
-                logBoard.innerHTML += `<div style="color:#ff7675">[DENIED] Insufficient permissions for ${action}</div>`;
+        function renderUsers() {
+            const list = document.getElementById('userManagementList');
+            list.innerHTML = appUsers.map(user => `
+                <div class="user-item">
+                    <div>
+                        <span style="font-weight:bold;">${user.name}</span>
+                        <span class="permission-badge">${user.role}</span>
+                    </div>
+                    <div>
+                        ${user.validated ? 
+                            '<span style="color:green; font-size:11px;">Validated</span>' : 
+                            `<button class="validate-btn" onclick="validateUser(${user.id})">Validate Permission</button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function validateUser(id) {
+            const user = appUsers.find(u => u.id === id);
+            if(user) user.validated = true;
+            renderUsers();
+        }
+
+        function renderGlobalTasks() {
+            const list = document.getElementById('taskManagementList');
+            if(globalTasks.length === 0) {
+                list.innerHTML = '<p style="font-size:12px; color:gray;">No active tasks in system.</p>';
+                return;
+            }
+            list.innerHTML = globalTasks.map((t, index) => `
+                <div class="task-item-admin">
+                    <div>
+                        <strong>${t.title}</strong><br>
+                        <small>Due: ${t.date} | P${t.prio}</small>
+                    </div>
+                    <button class="delete-btn-admin" onclick="adminDeleteTask(${index})">REMOVE</button>
+                </div>
+            `).join('');
+        }
+
+        function adminDeleteTask(index) {
+            if(confirm("Are you sure you want to delete this task from the system?")) {
+                globalTasks.splice(index, 1);
+                localStorage.setItem('studentTasks', JSON.stringify(globalTasks));
+                renderGlobalTasks();
             }
         }
     </script>
