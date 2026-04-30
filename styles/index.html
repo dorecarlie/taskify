@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Taskify — Welcome</title>
+    <meta charset="UTF-8">
+    <title>Taskify — Role Selection</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="page-container">
-        <div class="status-bar"><span>9:41</span><span>100%</span></div>
-        
-        <div class="welcome-logo" style="text-align: center; padding-top: 40px;">
-            <h1 class="welcome-title">Taskify</h1>
-            <p class="welcome-sub">Student Planner</p>
+        <div class="status-bar">
+            <span>9:41</span>
+            <a href="#" onclick="localStorage.removeItem('currentUser'); window.location.href='login.html';">Logout</a>
         </div>
+        
+        <div class="page-content">
+            <div style="text-align: center; padding-top: 20px;">
+                <h1 class="welcome-title">Taskify</h1>
+                <p class="welcome-sub">SUNY New Paltz Student Planner</p>
+            </div>
 
-        <div class="role-selection">
-            <p style="font-weight: 600; font-size: 14px; margin-left: 5px;">Continue as:</p>
+            <p style="font-weight: 800; font-size: 13px; color: var(--np-navy); margin-bottom: 15px;">CONTINUE AS:</p>
             
             <a href="student.html" class="role-btn">
-                <div class="role-btn-icon" style="background: #efecff;">🎓</div>
-                <div class="role-btn-text">
-                    <span class="role-name" style="color: var(--student-accent)">Student</span>
+                <div class="role-btn-icon" style="background: rgba(0,62,126,0.1);">🎓</div>
+                <div>
+                    <span class="role-name" style="color: var(--np-navy)">Student</span>
                     <span class="role-desc">Assignments & Tasks</span>
                 </div>
             </a>
 
+            <!-- Unlocked Admin -->
             <a href="admin.html" class="role-btn">
-                <div class="role-btn-icon" style="background: #fff4e5;">🛡️</div>
-                <div class="role-btn-text">
-                    <span class="role-name" style="color: var(--admin-accent)">Admin</span>
+                <div class="role-btn-icon" style="background: rgba(245,132,38,0.1);">🛡️</div>
+                <div>
+                    <span class="role-name" style="color: var(--np-orange)">Admin</span>
                     <span class="role-desc">System Oversight</span>
                 </div>
             </a>
 
+            <!-- Unlocked IT Support -->
             <a href="it.html" class="role-btn">
-                <div class="role-btn-icon" style="background: #e0f7fa;">💻</div>
-                <div class="role-btn-text">
-                    <span class="role-name" style="color: var(--it-accent)">IT Support</span>
+                <div class="role-btn-icon" style="background: rgba(0,83,155,0.1);">💻</div>
+                <div>
+                    <span class="role-name" style="color: var(--np-royal)">IT Support</span>
                     <span class="role-desc">Maintenance & Debug</span>
                 </div>
             </a>
