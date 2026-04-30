@@ -2,43 +2,204 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Taskify — IT Admin</title>
+    <title>IT System Panel — Taskify</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--np-orange);
+            padding-bottom: 10px;
+        }
+        .admin-header h2 {
+            font-size: 14px;
+            color: var(--np-navy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        /* Database Viewer Table */
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .db-table th {
+            text-align: left;
+            background: #f4f7f9;
+            padding: 10px;
+            color: var(--np-navy);
+        }
+        .db-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        /* Maintenance Section Layout */
+        .maintenance-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .maintenance-btn {
+            background: var(--np-navy);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.2s, transform 0.1s;
+            width: 100%;
+        }
+        .maintenance-btn:hover {
+            background: var(--np-orange);
+        }
+        .maintenance-btn:active {
+            transform: scale(0.98);
+        }
+        /* Debug Console Terminal */
+        .debug-console {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            height: 160px;
+            overflow-y: auto;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        .status-tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
-        <div class="status-bar"><a href="index.html">‹ Back</a><span>IT System</span></div>
+        <div class="status-bar">
+            <a href="index.html" style="color: var(--np-orange);">‹ Back to Roles</a>
+            <span>9:41</span>
+        </div>
         
-        <header>
-            <h2 class="welcome-title" style="color:var(--it-accent)">System Metrics</h2>
-            <p class="welcome-sub">Live Database Status</p>
-        </header>
+        <div class="page-content">
+            <h1 class="welcome-title">IT SYSTEM ADMINISTRATION</h1>
 
-        <div class="dash-action-grid">
-            <div class="metric-card">
-                <span class="metric-value">1,204</span>
-                <span class="metric-label">Active Tasks</span>
+            <!-- 1. View Database -->
+            <div class="admin-card">
+                <div class="admin-header">
+                    <h2>Database Viewer (Live Task Records)</h2>
+                </div>
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>Entry ID</th>
+                            <th>Assignment</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbRows">
+                        <!-- Live data from localStorage will be injected here -->
+                    </tbody>
+                </table>
             </div>
-            <div class="metric-card">
-                <span class="metric-value">99.9%</span>
-                <span class="metric-label">Uptime</span>
-            </div>
-        </div>
 
-        <div class="it-section">
-            <h3>Database Queries</h3>
-            <div class="log-window">
-                <code>[17:50] TaskID: 102 created by User 402</code><br>
-                <code>[17:51] Priority update: Task 88 -> Level 5</code><br>
-                <code>[17:55] Overdue check running...</code>
+            <!-- 2. Perform Maintenance & Validate Permissions -->
+            <div class="admin-card">
+                <div class="admin-header">
+                    <h2>Maintenance & Access Control</h2>
+                </div>
+                <div class="maintenance-container">
+                    <button class="maintenance-btn" onclick="runMaintenance('Clear Cache')">Clear System Cache</button>
+                    <button class="maintenance-btn" onclick="runMaintenance('Re-index Database')">Re-index Database</button>
+                    <button class="maintenance-btn" onclick="validateSystemPermissions()">Validate Global Permissions</button>
+                </div>
+                <div id="itUserStatus">
+                    <div style="font-size: 12px; color: var(--text-sub);">
+                        System Access: <span id="permStatus" style="color: var(--np-navy); font-weight: bold;">Verified</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="it-section">
-            <h3>Maintenance Tools</h3>
-            <button class="tool-btn">Run Garbage Collector</button>
-            <button class="tool-btn">Re-index SQL Tables</button>
+            <!-- 3. Debug System -->
+            <div class="admin-card">
+                <div class="admin-header">
+                    <h2>System Debug Console</h2>
+                </div>
+                <div class="debug-console" id="consoleOutput">
+                    > IT Console Initialized...<br>
+                    > System Health: Optimal<br>
+                    > Connection: Secure
+                </div>
+                <button class="auth-submit-btn" style="margin-top:15px; padding: 10px;" onclick="startFullDebug()">Execute System Debug</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('studentTasks') || '[]');
+
+        window.onload = () => {
+            renderDatabaseView();
+        };
+
+        function renderDatabaseView() {
+            const tbody = document.getElementById('dbRows');
+            if(tasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color: gray;">No entries found in local database.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = tasks.map((t, i) => `
+                <tr>
+                    <td style="color:gray; font-family: monospace;">UUID-0${i+1}</td>
+                    <td><strong>${t.title}</strong></td>
+                    <td><span class="status-tag" style="background:#eee;">P${t.prio}</span></td>
+                    <td style="color:green; font-weight:bold;">ACTIVE</td>
+                </tr>
+            `).join('');
+        }
+
+        function runMaintenance(action) {
+            logToConsole(`Initializing ${action}...`);
+            setTimeout(() => {
+                logToConsole(`${action} successful. System optimized.`);
+            }, 800);
+        }
+
+        function validateSystemPermissions() {
+            document.getElementById('permStatus').innerText = "Re-Validated";
+            logToConsole("Global permission protocols updated and verified.");
+        }
+
+        function startFullDebug() {
+            logToConsole("Starting full system scan...");
+            setTimeout(() => logToConsole("Scanning taskify.StudentPlanner package logic..."), 600);
+            setTimeout(() => logToConsole("Verifying Calendar Rendering Engine..."), 1200);
+            setTimeout(() => logToConsole("DEBUG COMPLETE: 0 critical errors found."), 1800);
+        }
+
+        function logToConsole(msg) {
+            const output = document.getElementById('consoleOutput');
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `<br>> [${time}] ${msg}`;
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
 </body>
 </html>
