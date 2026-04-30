@@ -2,9 +2,10 @@ package Testing;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
+
+import taskify.StudentPlanner.ConcreteTaskManager;
 import taskify.StudentPlanner.Student;
 import taskify.StudentPlanner.Task;
-import taskify.StudentPlanner.ConcreteTaskManager;
 
 public class StudentTest {
     
@@ -29,18 +30,18 @@ public class StudentTest {
         assertEquals(deadline, manager.getTasks().get(0).getDeadline()); // correct deadline
     }
 
-        @Test
-    public void testUpdateTask(){
+    //     @Test
+    // public void testUpdateTask(){
 
 
-    }
+    // }
 
-        @Test
-    public void testDeleteTask(){
+    //     @Test
+    // public void testDeleteTask(){
     
 
 
-    }
+    // }
 
 
 
