@@ -3,7 +3,7 @@ public class PriorityView implements Observer{
     private String label;
 
 
-    public void update(Task task){
+    public void update(List<Task> task){
         int p = task.getPriority();
         this.priorityLevel = p == 3 ? "high" : p == 2 ? "medium" : " low";
         this.label = task.getTitle();
