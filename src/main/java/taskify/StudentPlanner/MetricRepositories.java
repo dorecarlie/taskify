@@ -3,7 +3,7 @@ public class MetricRepositories implements Observer{
     private int totalTasksCompleted = 0;
     private int totalTasksOverdue = 0;
 
-    public void update(Task task){
+    public void update(List<Task> task){
         totalTasksCreated++;
         if(task.isOverdue()){
             totalTasksOverdue++;
